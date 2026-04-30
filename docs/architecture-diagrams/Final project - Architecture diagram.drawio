@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Page-1" id="a8TOX6MtloLFII9lQVx2">
-    <mxGraphModel dx="2384" dy="3516" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1000" math="0" shadow="0">
+    <mxGraphModel dx="1903" dy="2948" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1000" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -170,29 +170,13 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="nL9_FP_Yb-m9AE7UIghA-51" connectable="0" parent="pqM44ZgMmzcnzXOSq0w0-6" style="group" value="" vertex="1">
-          <mxGeometry height="110" width="100" x="1030" y="240" as="geometry" />
+          <mxGeometry height="110" width="100" x="1030" y="440" as="geometry" />
         </mxCell>
         <mxCell id="nL9_FP_Yb-m9AE7UIghA-10" parent="nL9_FP_Yb-m9AE7UIghA-51" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.secrets_manager;" value="" vertex="1">
           <mxGeometry height="80" width="80" x="10" as="geometry" />
         </mxCell>
         <mxCell id="nL9_FP_Yb-m9AE7UIghA-49" parent="nL9_FP_Yb-m9AE7UIghA-51" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=14;" value="Secrets Manager" vertex="1">
           <mxGeometry height="30" width="100" y="80" as="geometry" />
-        </mxCell>
-        <mxCell id="nL9_FP_Yb-m9AE7UIghA-53" connectable="0" parent="1" style="group" value="" vertex="1">
-          <mxGeometry height="110" width="100" x="30" y="-1480" as="geometry" />
-        </mxCell>
-        <mxCell id="nL9_FP_Yb-m9AE7UIghA-50" parent="nL9_FP_Yb-m9AE7UIghA-53" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.endpoints;" value="" vertex="1">
-          <mxGeometry height="80" width="80" x="10" as="geometry" />
-        </mxCell>
-        <mxCell id="nL9_FP_Yb-m9AE7UIghA-52" parent="nL9_FP_Yb-m9AE7UIghA-53" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=14;" value="VPC Endpoint" vertex="1">
-          <mxGeometry height="30" width="100" y="80" as="geometry" />
-        </mxCell>
-        <mxCell id="nL9_FP_Yb-m9AE7UIghA-54" edge="1" parent="1" source="nL9_FP_Yb-m9AE7UIghA-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="nL9_FP_Yb-m9AE7UIghA-49">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="160" y="-1440" />
-            </Array>
-          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
