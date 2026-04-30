@@ -61,9 +61,9 @@ Create an S3 bucket and sync the app files to it:
 aws s3 sync app/ s3://project-app-artifacts/app/
 ```
 
-### 2. Grant the EC2 IAM role access to S3
+### 2. Grant LabRole access to S3
 
-The EC2 instances use an IAM role to authenticate with AWS — no credentials needed in the script. Add the following permissions to that role, scoped to the bucket:
+The EC2 instances use `LabRole` (the pre-configured IAM role in AWS Academy Learner Lab) to authenticate with AWS — no credentials needed in the script. Add the following permissions to `LabRole`, scoped to the bucket:
 
 ```
 s3:GetObject
