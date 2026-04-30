@@ -7,6 +7,7 @@ A highly available PHP web application deployed on AWS, serving global developme
 - [Scenario](#scenario)
 - [Architecture Overview](#architecture-overview)
 - [Infrastructure Components](#infrastructure-components)
+- [Deploying the Application](#deploying-the-application)
 - [Implementation Phases](#implementation-phases)
 - [Cost Estimate](#cost-estimate)
 
@@ -47,6 +48,34 @@ The architecture diagram is available in `docs/architecture-diagrams/`.
 - **Auto Scaling** - Automatically adjusts the number of EC2 instances based on demand, improving availability and cost efficiency.
 - **AWS Secrets Manager** - Keeps database credentials out of application code and instance metadata, supporting secret rotation.
 - **Separate DB subnets** - Isolates the database tier from the application tier at the network level for defense in depth.
+
+## Deploying the Application
+
+The PHP application lives in `app/` and is deployed to EC2 instances via S3. The user data script at `scripts/ec2-user-data.sh` runs automatically on each instance boot and pulls the app down from S3.
+
+### 1. Upload the app to S3
+
+Create an S3 bucket and sync the app files to it:
+
+```bash
+aws s3 sync app/ s3://project-app-artifacts/app/
+```
+
+### 2. Grant the EC2 IAM role access to S3
+
+The EC2 instances use an IAM role to authenticate with AWS — no credentials needed in the script. Add the following permissions to that role, scoped to the bucket:
+
+```
+s3:GetObject
+s3:ListBucket
+```
+
+Applied to:
+
+- `arn:aws:s3:::project-app-artifacts`
+- `arn:aws:s3:::project-app-artifacts/*`
+
+Once these are in place, attach `scripts/ec2-user-data.sh` to the Launch Template and new instances will install Apache, PHP, the AWS SDK, and the app automatically on first boot.
 
 ## Implementation Phases
 
