@@ -1,8 +1,8 @@
-# Manual Build Guide - AWS Console (Phase 1)
+# AWS Console Guide
 
-Step-by-step guide to build the three-tier architecture through the AWS Management Console.
+Step-by-step guide to build the three-tier architecture through the AWS Console.
 
-**Prerequisites:**
+### Prerequisites
 
 - AWS Academy Learner Lab session active
 - Region set to `us-east-1` (N. Virginia)
@@ -10,47 +10,66 @@ Step-by-step guide to build the three-tier architecture through the AWS Manageme
 
 ## Step 1 - Create the VPC
 
-1. Go to **VPC** > **Your VPCs** > **Create VPC** and set the following:
-   - Select **VPC only**
-   - Name: `project-dev-vpc`
+1. Go to **VPC** > **Your VPCs** > **Create VPC**.
+
+2. Under **VPC settings**, set:
+   - Resources to create: **VPC only**
+   - Name tag: `project-dev-vpc`
+   - IPv4 CIDR block: **IPv4 CIDR manual input**
    - IPv4 CIDR: `10.0.0.0/16`
-   - IPv6: No
-   - Tenancy: Default
-2. Click **Create VPC**.
-3. Select the VPC > **Actions** > **Edit VPC settings** and enable:
-   - **DNS hostnames**
-   - **DNS resolution**
-4. Click **Save**.
+   - IPv6 CIDR block: **No IPv6 CIDR block**
+   - Tenancy: **Default**
+
+3. Click **Create VPC**.
+
+4. Select the VPC > **Actions** > **Edit VPC settings**.
+
+5. Under **DNS settings**, enable:
+   - **Enable DNS resolution**
+   - **Enable DNS hostnames**
+
+6. Click **Save**.
 
 ## Step 2 - Create Subnets
 
-1. Go to **VPC** > **Subnets** > **Create subnet** and set the following:
-   - VPC: `project-dev-vpc`
-2. Add all 6 subnets using **Add new subnet** for each:
+1. Go to **VPC** > **Subnets** > **Create subnet**.
 
-   | Name                                   | AZ         | CIDR          |
-   | -------------------------------------- | ---------- | ------------- |
-   | `project-dev-subnet-public-us-east-1a` | us-east-1a | `10.0.0.0/24` |
-   | `project-dev-subnet-public-us-east-1b` | us-east-1b | `10.0.1.0/24` |
-   | `project-dev-subnet-app-us-east-1a`    | us-east-1a | `10.0.2.0/24` |
-   | `project-dev-subnet-app-us-east-1b`    | us-east-1b | `10.0.3.0/24` |
-   | `project-dev-subnet-db-us-east-1a`     | us-east-1a | `10.0.4.0/24` |
-   | `project-dev-subnet-db-us-east-1b`     | us-east-1b | `10.0.5.0/24` |
+2. Under **VPC**, set:
+   - VPC ID: `project-dev-vpc`
 
-3. Click **Create subnets**.
-4. Enable **Auto-assign public IPv4** on both public subnets. For each one:
+3. Under **Subnet settings**, add all 6 subnets using **Add new subnet** for each:
+
+   | Subnet name                            | Availability Zone | IPv4 subnet CIDR block |
+   | -------------------------------------- | ----------------- | ---------------------- |
+   | `project-dev-subnet-public-us-east-1a` | us-east-1a        | `10.0.0.0/24`          |
+   | `project-dev-subnet-public-us-east-1b` | us-east-1b        | `10.0.1.0/24`          |
+   | `project-dev-subnet-app-us-east-1a`    | us-east-1a        | `10.0.2.0/24`          |
+   | `project-dev-subnet-app-us-east-1b`    | us-east-1b        | `10.0.3.0/24`          |
+   | `project-dev-subnet-db-us-east-1a`     | us-east-1a        | `10.0.4.0/24`          |
+   | `project-dev-subnet-db-us-east-1b`     | us-east-1b        | `10.0.5.0/24`          |
+
+4. Click **Create subnets**.
+
+5. Enable **Auto-assign public IPv4** on both public subnets. For each one:
    - Select the subnet > **Actions** > **Edit subnet settings**
-   - Check **Enable auto-assign public IPv4 address**
+   - Under **Auto-assign IP settings**, check **Enable auto-assign public IPv4 address**
    - Click **Save**.
 
 ## Step 3 - Create and Attach Internet Gateway
 
-1. Go to **VPC** > **Internet Gateways** > **Create internet gateway** and set the following:
-   - Name: `project-dev-igw`
-2. Click **Create internet gateway**.
-3. Select it > **Actions** > **Attach to VPC** and set the following:
-   - VPC: `project-dev-vpc`
-4. Click **Attach internet gateway**.
+1. Go to **VPC** > **Internet gateways** > **Create internet gateway**.
+
+2. Under **Internet gateway settings**, set:
+   - Name tag: `project-dev-igw`
+
+3. Click **Create internet gateway**.
+
+4. Select it > **Actions** > **Attach to VPC**.
+
+5. Under **VPC**, set:
+   - Available VPCs: `project-dev-vpc`
+
+6. Click **Attach internet gateway**.
 
 ## Step 4 - Create NAT Gateways
 
@@ -58,72 +77,99 @@ Create one NAT Gateway per AZ.
 
 ### NAT Gateway 1a
 
-1. Go to **VPC** > **NAT Gateways** > **Create NAT gateway** and set the following:
+1. Go to **VPC** > **NAT gateways** > **Create NAT gateway**.
+
+2. Under **NAT gateway settings**, set:
    - Name: `project-dev-nat-us-east-1a`
    - Availability mode: **Zonal**
    - Subnet: `project-dev-subnet-public-us-east-1a`
-   - Connectivity type: Public
-2. Click **Allocate Elastic IP**.
-3. Click **Create NAT gateway**.
+   - Connectivity type: **Public**
+
+3. Click **Allocate Elastic IP**.
+4. Click **Create NAT gateway**.
 
 ### NAT Gateway 1b
 
-1. Go to **VPC** > **NAT Gateways** > **Create NAT gateway** and set the following:
+1. Go to **VPC** > **NAT gateways** > **Create NAT gateway**.
+
+2. Under **NAT gateway settings**, set:
    - Name: `project-dev-nat-us-east-1b`
    - Availability mode: **Zonal**
    - Subnet: `project-dev-subnet-public-us-east-1b`
-   - Connectivity type: Public
-2. Click **Allocate Elastic IP**.
-3. Click **Create NAT gateway**.
+   - Connectivity type: **Public**
 
-> **Note**: Wait for both NAT Gateways to show State **Available** before proceeding.
+3. Click **Allocate Elastic IP**.
+4. Click **Create NAT gateway**.
+
+> Wait for both NAT Gateways to show State **Available** before proceeding.
 
 ## Step 5 - Create Route Tables
 
 ### Public Route Table
 
-1. Go to **VPC** > **Route Tables** > **Create route table** and set the following:
+1. Go to **VPC** > **Route tables** > **Create route table**.
+
+2. Under **Route table settings**, set:
    - Name: `project-dev-rt-public`
    - VPC: `project-dev-vpc`
-2. Click **Create route table**.
-3. Select it > **Routes** tab > **Edit routes** > **Add route** and set the following:
+
+3. Click **Create route table**.
+
+4. Select it > **Routes** tab > **Edit routes** > **Add route** and set the following:
    - Destination: `0.0.0.0/0`
    - Target: Internet Gateway > `project-dev-igw`
-4. Click **Save changes**.
-5. Select **Subnet associations** tab > **Edit subnet associations** and select:
+
+5. Click **Save changes**.
+
+6. Select **Subnet associations** tab > **Edit subnet associations** and select:
    - `project-dev-subnet-public-us-east-1a`
    - `project-dev-subnet-public-us-east-1b`
-6. Click **Save associations**.
+
+7. Click **Save associations**.
 
 ### Private Route Table 1a
 
-1. Go to **VPC** > **Route Tables** > **Create route table** and set the following:
+1. Go to **VPC** > **Route tables** > **Create route table**.
+
+2. Under **Route table settings**, set:
    - Name: `project-dev-rt-private-us-east-1a`
    - VPC: `project-dev-vpc`
-2. Click **Create route table**.
-3. Add route:
+
+3. Click **Create route table**.
+
+4. Select it > **Routes** tab > **Edit routes** > **Add route** and set the following:
    - Destination: `0.0.0.0/0`
    - Target: NAT Gateway > `project-dev-nat-us-east-1a`
-4. Click **Save changes**.
-5. Associate with:
+
+5. Click **Save changes**.
+
+6. Select **Subnet associations** tab > **Edit subnet associations** and select:
    - `project-dev-subnet-app-us-east-1a`
    - `project-dev-subnet-db-us-east-1a`
-6. Click **Save associations**.
+
+7. Click **Save associations**.
 
 ### Private Route Table 1b
 
-1. Go to **VPC** > **Route Tables** > **Create route table** and set the following:
+1. Go to **VPC** > **Route tables** > **Create route table**.
+
+2. Under **Route table settings**, set:
    - Name: `project-dev-rt-private-us-east-1b`
    - VPC: `project-dev-vpc`
-2. Click **Create route table**.
-3. Add route:
+
+3. Click **Create route table**.
+
+4. Select it > **Routes** tab > **Edit routes** > **Add route** and set the following:
    - Destination: `0.0.0.0/0`
    - Target: NAT Gateway > `project-dev-nat-us-east-1b`
-4. Click **Save changes**.
-5. Associate with:
+
+5. Click **Save changes**.
+
+6. Select **Subnet associations** tab > **Edit subnet associations** and select:
    - `project-dev-subnet-app-us-east-1b`
    - `project-dev-subnet-db-us-east-1b`
-6. Click **Save associations**.
+
+7. Click **Save associations**.
 
 ## Step 6 - Create Security Groups
 
@@ -131,29 +177,29 @@ All security groups use VPC: `project-dev-vpc`.
 
 ### 6.1 - Create All Security Groups (Empty)
 
-Go to **VPC** > **Security Groups** > **Create security group** for each:
+Go to **VPC** > **Security groups** > **Create security group** for each:
 
-1. For `project-dev-sg-bastion`, set:
-   - Name: `project-dev-sg-bastion`
+1. For `project-dev-sg-bastion`, set under **Basic details**:
+   - Security group name: `project-dev-sg-bastion`
    - Description: Bastion host security group
    - VPC: `project-dev-vpc`
 
-2. For `project-dev-sg-db`, set:
-   - Name: `project-dev-sg-db`
+2. For `project-dev-sg-db`, set under **Basic details**:
+   - Security group name: `project-dev-sg-db`
    - Description: DB tier security group
    - VPC: `project-dev-vpc`
 
-3. For `project-dev-sg-app`, set:
-   - Name: `project-dev-sg-app`
+3. For `project-dev-sg-app`, set under **Basic details**:
+   - Security group name: `project-dev-sg-app`
    - Description: App tier security group
    - VPC: `project-dev-vpc`
 
-4. For `project-dev-sg-alb`, set:
-   - Name: `project-dev-sg-alb`
+4. For `project-dev-sg-alb`, set under **Basic details**:
+   - Security group name: `project-dev-sg-alb`
    - Description: ALB security group
    - VPC: `project-dev-vpc`
 
-> **Note**: For each one, remove the default outbound rule before saving, except for `project-dev-sg-bastion` (leave its outbound as default).
+> For each one, remove the default outbound rule under **Outbound rules** before saving, except for `project-dev-sg-bastion` (leave its outbound as default).
 
 ### 6.2 - Add Rules
 
@@ -161,7 +207,8 @@ For `project-dev-sg-bastion`:
 
 1. Go to `project-dev-sg-bastion` > **Inbound rules** > **Edit inbound rules**. Add:
    - Type: SSH
-   - Port: 22
+   - Protocol: TCP
+   - Port range: 22
    - Source: `0.0.0.0/0`
    - Description: SSH from admin device
 2. Click **Save rules**.
@@ -170,12 +217,14 @@ For `project-dev-sg-db`:
 
 1. Go to `project-dev-sg-db` > **Inbound rules** > **Edit inbound rules**. Add:
    - Type: MYSQL/Aurora
-   - Port: 3306
+   - Protocol: TCP
+   - Port range: 3306
    - Source: `project-dev-sg-app`
    - Description: MySQL from app tier only
 2. Add a second rule:
    - Type: MYSQL/Aurora
-   - Port: 3306
+   - Protocol: TCP
+   - Port range: 3306
    - Source: `project-dev-sg-bastion`
    - Description: MySQL from bastion
 3. Click **Save rules**.
@@ -184,23 +233,27 @@ For `project-dev-sg-app`:
 
 1. Go to `project-dev-sg-app` > **Inbound rules** > **Edit inbound rules**. Add:
    - Type: HTTP
-   - Port: 80
+   - Protocol: TCP
+   - Port range: 80
    - Source: `project-dev-sg-alb`
    - Description: HTTP from ALB only
 2. Add a second rule:
    - Type: SSH
-   - Port: 22
+   - Protocol: TCP
+   - Port range: 22
    - Source: `project-dev-sg-bastion`
    - Description: SSH from bastion only
 3. Click **Save rules**.
 4. Go to `project-dev-sg-app` > **Outbound rules** > **Edit outbound rules**. Add:
    - Type: MYSQL/Aurora
-   - Port: 3306
+   - Protocol: TCP
+   - Port range: 3306
    - Destination: `project-dev-sg-db`
    - Description: MySQL to DB tier
 5. Add a second rule:
    - Type: HTTPS
-   - Port: 443
+   - Protocol: TCP
+   - Port range: 443
    - Destination: `0.0.0.0/0`
    - Description: AWS APIs, S3, dnf updates
 6. Click **Save rules**.
@@ -209,13 +262,15 @@ For `project-dev-sg-alb`:
 
 1. Go to `project-dev-sg-alb` > **Inbound rules** > **Edit inbound rules**. Add:
    - Type: HTTP
-   - Port: 80
+   - Protocol: TCP
+   - Port range: 80
    - Source: `0.0.0.0/0`
    - Description: HTTP from internet
 2. Click **Save rules**.
 3. Go to `project-dev-sg-alb` > **Outbound rules** > **Edit outbound rules**. Add:
    - Type: HTTP
-   - Port: 80
+   - Protocol: TCP
+   - Port range: 80
    - Destination: `project-dev-sg-app`
    - Description: Forward to app tier
 4. Click **Save rules**.
@@ -224,14 +279,20 @@ For `project-dev-sg-alb`:
 
 ### 7.1 - Create DB Subnet Group
 
-1. Go to **RDS** > **Subnet groups** > **Create DB subnet group** and set the following:
+1. Go to **RDS** > **Subnet groups** > **Create DB subnet group**.
+
+2. Under **Subnet group details**, set:
    - Name: `project-dev-subnet-group-mysql`
    - Description: DB subnet group for MySQL
    - VPC: `project-dev-vpc`
+
+3. Under **Add subnets**, set:
+   - Availability Zones: `us-east-1a` and `us-east-1b`
    - Subnets:
-     - AZ `us-east-1a` → `project-dev-subnet-db-us-east-1a`
-     - AZ `us-east-1b` → `project-dev-subnet-db-us-east-1b`
-2. Click **Create**.
+     - `project-dev-subnet-db-us-east-1a`
+     - `project-dev-subnet-db-us-east-1b`
+
+4. Click **Create**.
 
 ### 7.2 - Create RDS Instance
 
