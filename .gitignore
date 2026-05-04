@@ -6,8 +6,25 @@ docs/architecture-diagrams/**/*.png
 .env.*
 !.env.example
 
-# Terraform
+# SSH keys
+*.pem
+*.ppk
+
+# Generated scripts (contain environment-specific values)
+scripts/user-data.sh
+
+# Terraform state
 *.tfstate
 *.tfstate.backup
+*.tfstate.lock.info
+
+# Terraform working directory
 .terraform/
 .terraform.lock.hcl
+
+# Terraform sensitive variable files
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
