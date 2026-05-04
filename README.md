@@ -9,8 +9,7 @@ A highly available PHP web application deployed on AWS, serving global developme
 - [Repository Structure](#repository-structure)
 - [Infrastructure Components](#infrastructure-components)
 - [Design Decisions](#design-decisions)
-- [Implementation Phases](#implementation-phases)
-- [Cost Estimate](#cost-estimate)
+- [Deployment](#deployment)
 
 ## Scenario
 
@@ -29,15 +28,16 @@ Internet
               └── RDS MySQL (private DB subnet: us-east-1a)
 ```
 
-> The architecture diagram shows RDS Multi-AZ. However, since this project runs on an AWS Academy Learner Lab, **RDS Multi-AZ is not supported**. A single RDS instance is deployed in `us-east-1a`.
+> **Note**: The architecture diagram shows RDS Multi-AZ. However, since this project runs on an AWS Academy Learner Lab, **RDS Multi-AZ is not supported**. A single RDS instance is deployed in `us-east-1a`.
 
 ## Repository Structure
 
 ```
 ├── app/          # PHP web application source
 ├── db/           # SQL dump for the countries database
-├── docs/         # Architecture diagrams, infrastructure spec, and build guide
-├── scripts/      # EC2 user data and database import scripts
+├── docs/         # Architecture diagrams, infrastructure spec, and build guides
+├── scripts/      # Database import script and generated user data
+├── terraform/    # Terraform IaC — environments and reusable modules
 └── README.md
 ```
 
@@ -71,26 +71,104 @@ Internet
 - **AWS Secrets Manager** — keeps database credentials out of application code, supporting secret rotation.
 - **Separate DB subnets** — isolates the database tier from the application tier at the network level for defense in depth.
 
-## Implementation Phases
+## Deployment
 
-### Phase 1 - Manual build via AWS Console
+This deployment uses Terraform to provision the full infrastructure. For a manual alternative, see the [AWS Console Guide](docs/aws-console-guide.md) for a step-by-step walkthrough through the AWS Console.
 
-The full infrastructure was built and validated through the AWS Management Console. See the [Manual Build Guide](docs/manual-build-guide.md) for the complete step-by-step guide.
+### Prerequisites
 
-### Phase 2 - Infrastructure as Code with Terraform
+1. Create a key pair. This is used to SSH into the bastion host and app instances:
 
-Once the manual build is validated, the entire infrastructure will be reproduced in Terraform for repeatable, version-controlled deployments.
+   ```sh
+   aws ec2 create-key-pair \
+      --key-name project-dev-keypair \
+      --query KeyMaterial \
+      --output text > project-dev-keypair.pem
+   ```
 
-## Cost Estimate (us-east-1, on-demand)
+2. Set the correct permissions on the key file. SSH will refuse to use it otherwise:
 
-| Resource                                                 | Monthly (USD)  |
-| -------------------------------------------------------- | -------------- |
-| Amazon RDS for MySQL (db.t3.micro, Single-AZ, 20 GB gp2) | ~$29.42        |
-| Application Load Balancer                                | ~$16.93        |
-| Amazon EC2 (2× t3.micro, 50% utilization)                | ~$7.59         |
-| NAT Gateways (2×)                                        | ~$33.30        |
-| AWS Secrets Manager (1 secret, 100 API calls/day)        | ~$0.42         |
-| **Total (monthly)**                                      | **~$87.66**    |
-| **Total (annual)**                                       | **~$1,051.94** |
+   ```sh
+   chmod 400 project-dev-keypair.pem
+   ```
 
-> Prices are estimates and subject to change. Use the [AWS Pricing Calculator](https://calculator.aws/pricing/2/homescreen) for up-to-date figures.
+3. Create the S3 bucket. It will store the app source, the SQL dump, and the DB import script (all pulled by EC2 instances at boot time):
+
+   ```sh
+   BUCKET_NAME=$(
+      aws s3api create-bucket \
+         --bucket project-dev-artifacts \
+         --region us-east-1 \
+         --bucket-namespace account-regional \
+         --query "Location" \
+         --output text | tr -d '/'
+   )
+
+   echo "Bucket name: $BUCKET_NAME"
+   ```
+
+   To retrieve the bucket name in a new terminal session:
+
+   ```sh
+   BUCKET_NAME=$(
+      aws s3api list-buckets \
+         --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
+         --output text
+   )
+
+   echo "Bucket name: $BUCKET_NAME"
+   ```
+
+4. Upload artifacts to S3:
+
+   ```sh
+   aws s3 sync app/ s3://$BUCKET_NAME/app/
+   aws s3 cp db/countries.sql s3://$BUCKET_NAME/countries.sql
+   aws s3 cp scripts/db-import.sh s3://$BUCKET_NAME/db-import.sh
+   ```
+
+5. Update `terraform/environments/dev/dev.tfvars`:
+   - Set `s3_bucket_name` to the value of `$BUCKET_NAME`
+
+### Deploy
+
+To deploy the infrastructure:
+
+1. Initialize Terraform:
+
+   ```sh
+   terraform -chdir=terraform/environments/dev init
+   ```
+
+2. Deploy:
+
+   ```sh
+   terraform -chdir=terraform/environments/dev apply -var-file=dev.tfvars
+   ```
+
+### Import the Database
+
+Once `terraform apply` completes, to import the database:
+
+1. SSH into the bastion (IP shown in Terraform outputs):
+
+   ```sh
+   ssh -i project-dev-keypair.pem ec2-user@<bastion-public-ip>
+   ```
+
+2. Pull the import script from S3:
+
+   ```sh
+   aws s3 cp s3://$BUCKET_NAME/db-import.sh .
+   ```
+
+3. Run it:
+
+   ```sh
+   chmod +x db-import.sh
+   ./db-import.sh
+   ```
+
+### Access the App
+
+Open the ALB DNS name shown in Terraform outputs in your browser.
