@@ -1,38 +1,38 @@
 #!/bin/bash
 # EC2 User Data Script
 # Runs on first boot of each instance launched by the Auto Scaling Group.
-# Installs Apache, PHP, the AWS SDK, and deploys the app from S3.
+# Installs Apache, PHP, Composer, the AWS SDK, and deploys the app from S3.
 
 set -euxo pipefail
 
-# Variables
-S3_BUCKET="project-app-artifacts"
+# variables
+S3_BUCKET="project-dev-artifacts-<account-regional-suffix>"
 APP_S3_PREFIX="app/"
 WEB_ROOT="/var/www/html"
 
-# System updates & packages
-yum update -y
-yum install -y httpd php php-mysqli php-json curl unzip
+# system updates & packages
+dnf update -y
+dnf install -y httpd php php-mysqli php-json unzip
 
-# Deploy app from S3
-# The EC2 IAM role must have s3:GetObject / s3:ListBucket on the bucket.
+# deploys app from S3
 aws s3 sync "s3://${S3_BUCKET}/${APP_S3_PREFIX}" "${WEB_ROOT}/"
 
-# Install AWS SDK for PHP (required by get-parameters.php)
+# AWS SDK for PHP (required by get-parameters.php) installation
 cd "${WEB_ROOT}"
 
-# Install Composer (PHP dependency manager)
+# installs Composer
+export HOME=/root
 curl -sS https://getcomposer.org/installer -o composer-setup.php
 php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 rm -f composer-setup.php
 
-# Install the AWS SDK — this generates aws-autoloader.php
+# installs the AWS SDK — this generates the autoloader at vendor/autoload.php
 composer require aws/aws-sdk-php --no-interaction --no-progress
 
-# Fix permissions
+# fixes permissions
 chown -R apache:apache "${WEB_ROOT}"
 chmod -R 755 "${WEB_ROOT}"
 
-# Enable and start Apache
+# enables and starts Apache
 systemctl enable httpd
 systemctl start httpd
