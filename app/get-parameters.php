@@ -1,7 +1,7 @@
 <?php
         # Retrieve settings from Parameter Store
         error_log('Retrieving settings');
-        require 'aws-autoloader.php';
+        require 'vendor/autoload.php';
       
         #$az = file_get_contents('http://169.254.169.254/latest/meta-data/placement/availability-zone');
 
