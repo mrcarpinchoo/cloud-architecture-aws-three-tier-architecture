@@ -162,7 +162,7 @@ For `project-dev-sg-bastion`:
 1. Go to `project-dev-sg-bastion` > **Inbound rules** > **Edit inbound rules**. Add:
    - Type: SSH
    - Port: 22
-   - Source: My IP
+   - Source: `0.0.0.0/0`
    - Description: SSH from admin device
 2. Click **Save rules**.
 
@@ -298,9 +298,17 @@ For `project-dev-sg-alb`:
 
 3. Leave all other settings as default and click **Create bucket**.
 
-> **Note**: After creation, AWS will show the full bucket name in the format `project-dev-artifacts-<account-regional-suffix>`. Copy it and update the `S3_BUCKET` variable in `scripts/ec2-user-data.sh` and `scripts/db-import.sh` before uploading.
+> **Note**: After creation, AWS will show the full bucket name in the format `project-dev-artifacts-<account-regional-suffix>`. Copy it — you'll need it in the next steps.
 
-4. Upload the app and scripts from your local machine (replace `<account-regional-suffix>` with the actual suffix):
+4. Copy the user data template and replace the bucket name placeholder:
+
+   ```bash
+   cp terraform/modules/compute/templates/user-data.sh.tpl scripts/user-data.sh
+   ```
+
+   Open `scripts/user-data.sh` and replace `${s3_bucket_name}` with your actual full bucket name.
+
+5. Upload the app and scripts from your local machine:
    ```bash
    aws s3 sync app/ s3://project-dev-artifacts-<account-regional-suffix>/app/
    aws s3 cp db/countries.sql s3://project-dev-artifacts-<account-regional-suffix>/countries.sql
@@ -404,7 +412,7 @@ The script installs the MySQL client, downloads the dump from S3, retrieves cred
 
 7. Under **Advanced details**, set:
    - IAM instance profile: `LabRole`
-   - User data: paste the contents of `scripts/ec2-user-data.sh`
+   - User data: paste the contents of `scripts/user-data.sh`
 
 8. Click **Create launch template**.
 

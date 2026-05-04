@@ -117,9 +117,11 @@ Associated with: `project-dev-subnet-app-us-east-1b`, `project-dev-subnet-db-us-
 
 **Inbound**
 
-| Port | Protocol | Source  | Description           |
-| ---- | -------- | ------- | --------------------- |
-| 22   | TCP      | Your IP | SSH from admin laptop |
+| Port | Protocol | Source      | Description           |
+| ---- | -------- | ----------- | --------------------- |
+| 22   | TCP      | `0.0.0.0/0` | SSH from admin laptop |
+
+> **Note**: In production, restrict the SSH source to your specific IP (`x.x.x.x/32`) instead of `0.0.0.0/0`.
 
 **Outbound**
 
@@ -214,13 +216,13 @@ The bastion serves two purposes:
 
 ### Launch Template (`project-dev-lt-app`)
 
-| Setting              | Value                                 |
-| -------------------- | ------------------------------------- |
-| AMI                  | Amazon Linux 2023 (latest, us-east-1) |
-| Instance type        | `t3.micro`                            |
-| IAM instance profile | `LabRole`                             |
-| Security group       | `project-dev-sg-app`                  |
-| User data            | `scripts/ec2-user-data.sh`            |
+| Setting              | Value                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| AMI                  | Amazon Linux 2023 (latest, us-east-1)                                                          |
+| Instance type        | `t3.micro`                                                                                     |
+| IAM instance profile | `LabRole`                                                                                      |
+| Security group       | `project-dev-sg-app`                                                                           |
+| User data            | `scripts/user-data.sh` (generated from `terraform/modules/compute/templates/user-data.sh.tpl`) |
 
 ### Auto Scaling Group (`project-dev-asg-app`)
 
