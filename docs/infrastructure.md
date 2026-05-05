@@ -203,7 +203,7 @@ Associated with: `project-dev-subnet-app-us-east-1b`, `project-dev-subnet-db-us-
 | Instance type        | `t3.micro`                             |
 | Subnet               | `project-dev-subnet-public-us-east-1a` |
 | Public IP            | Enabled                                |
-| IAM instance profile | `LabRole`                              |
+| IAM instance profile | `LabInstanceProfile`                   |
 | Security group       | `project-dev-sg-bastion`               |
 | Key pair             | `project-dev-keypair`                  |
 
@@ -220,7 +220,7 @@ The bastion serves two purposes:
 | -------------------- | ---------------------------------------------------------------------------------------------- |
 | AMI                  | Amazon Linux 2023 (latest, us-east-1)                                                          |
 | Instance type        | `t3.micro`                                                                                     |
-| IAM instance profile | `LabRole`                                                                                      |
+| IAM instance profile | `LabInstanceProfile`                                                                           |
 | Security group       | `project-dev-sg-app`                                                                           |
 | User data            | `scripts/user-data.sh` (generated from `terraform/modules/compute/templates/user-data.sh.tpl`) |
 
@@ -274,7 +274,7 @@ The RDS master credentials are stored as a Secrets Manager secret. The secret na
 
 `get-parameters.php` retrieves the secret at runtime using `listSecrets` filtered by the `rds!` prefix, then calls `getSecretValue` to obtain `username` and `password`.
 
-Required IAM permissions on `LabRole`:
+Required IAM permissions on `LabInstanceProfile`:
 
 - `secretsmanager:ListSecrets`
 - `secretsmanager:GetSecretValue`
