@@ -14,7 +14,7 @@ data "aws_ami" "amazon_linux_2023" {
 }
 
 data "aws_iam_instance_profile" "lab_role" {
-  name = "LabRole"
+  name = "LabInstanceProfile"
 }
 
 # Bastion Host
@@ -137,13 +137,12 @@ resource "aws_autoscaling_policy" "cpu" {
   name                   = "project-${var.environment}-scaling-policy"
   autoscaling_group_name = aws_autoscaling_group.app.name
   policy_type            = "TargetTrackingScaling"
+  estimated_instance_warmup = 300
 
   target_tracking_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
-    target_value     = var.asg_cpu_target
-    scale_in_cooldown  = 300
-    scale_out_cooldown = 300
+    target_value = var.asg_cpu_target
   }
 }
