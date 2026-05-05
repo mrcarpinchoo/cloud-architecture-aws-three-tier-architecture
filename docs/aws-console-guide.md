@@ -13,20 +13,20 @@ Step-by-step guide to build the three-tier architecture through the AWS Console.
 1. Go to **VPC** > **Your VPCs** > **Create VPC**.
 
 2. Under **VPC settings**, set:
-   - Resources to create: **VPC only**
-   - Name tag: `project-dev-vpc`
-   - IPv4 CIDR block: **IPv4 CIDR manual input**
-   - IPv4 CIDR: `10.0.0.0/16`
-   - IPv6 CIDR block: **No IPv6 CIDR block**
-   - Tenancy: **Default**
+    - Resources to create: **VPC only**
+    - Name tag: `project-dev-vpc`
+    - IPv4 CIDR block: **IPv4 CIDR manual input**
+    - IPv4 CIDR: `10.0.0.0/16`
+    - IPv6 CIDR block: **No IPv6 CIDR block**
+    - Tenancy: **Default**
 
 3. Click **Create VPC**.
 
 4. Select the VPC > **Actions** > **Edit VPC settings**.
 
 5. Under **DNS settings**, enable:
-   - **Enable DNS resolution**
-   - **Enable DNS hostnames**
+    - **Enable DNS resolution**
+    - **Enable DNS hostnames**
 
 6. Click **Save**.
 
@@ -35,39 +35,39 @@ Step-by-step guide to build the three-tier architecture through the AWS Console.
 1. Go to **VPC** > **Subnets** > **Create subnet**.
 
 2. Under **VPC**, set:
-   - VPC ID: `project-dev-vpc`
+    - VPC ID: `project-dev-vpc`
 
 3. Under **Subnet settings**, add all 6 subnets using **Add new subnet** for each:
 
-   | Subnet name                            | Availability Zone | IPv4 subnet CIDR block |
-   | -------------------------------------- | ----------------- | ---------------------- |
-   | `project-dev-subnet-public-us-east-1a` | us-east-1a        | `10.0.0.0/24`          |
-   | `project-dev-subnet-public-us-east-1b` | us-east-1b        | `10.0.1.0/24`          |
-   | `project-dev-subnet-app-us-east-1a`    | us-east-1a        | `10.0.2.0/24`          |
-   | `project-dev-subnet-app-us-east-1b`    | us-east-1b        | `10.0.3.0/24`          |
-   | `project-dev-subnet-db-us-east-1a`     | us-east-1a        | `10.0.4.0/24`          |
-   | `project-dev-subnet-db-us-east-1b`     | us-east-1b        | `10.0.5.0/24`          |
+    | Subnet name                            | Availability Zone | IPv4 subnet CIDR block |
+    | -------------------------------------- | ----------------- | ---------------------- |
+    | `project-dev-subnet-public-us-east-1a` | us-east-1a        | `10.0.0.0/24`          |
+    | `project-dev-subnet-public-us-east-1b` | us-east-1b        | `10.0.1.0/24`          |
+    | `project-dev-subnet-app-us-east-1a`    | us-east-1a        | `10.0.2.0/24`          |
+    | `project-dev-subnet-app-us-east-1b`    | us-east-1b        | `10.0.3.0/24`          |
+    | `project-dev-subnet-db-us-east-1a`     | us-east-1a        | `10.0.4.0/24`          |
+    | `project-dev-subnet-db-us-east-1b`     | us-east-1b        | `10.0.5.0/24`          |
 
 4. Click **Create subnets**.
 
 5. Enable **Auto-assign public IPv4** on both public subnets. For each one:
-   - Select the subnet > **Actions** > **Edit subnet settings**
-   - Under **Auto-assign IP settings**, check **Enable auto-assign public IPv4 address**
-   - Click **Save**.
+    - Select the subnet > **Actions** > **Edit subnet settings**
+    - Under **Auto-assign IP settings**, check **Enable auto-assign public IPv4 address**
+    - Click **Save**.
 
 ## Step 3 - Create and Attach Internet Gateway
 
 1. Go to **VPC** > **Internet gateways** > **Create internet gateway**.
 
 2. Under **Internet gateway settings**, set:
-   - Name tag: `project-dev-igw`
+    - Name tag: `project-dev-igw`
 
 3. Click **Create internet gateway**.
 
 4. Select it > **Actions** > **Attach to VPC**.
 
 5. Under **VPC**, set:
-   - Available VPCs: `project-dev-vpc`
+    - Available VPCs: `project-dev-vpc`
 
 6. Click **Attach internet gateway**.
 
@@ -80,10 +80,10 @@ Create one NAT Gateway per AZ.
 1. Go to **VPC** > **NAT gateways** > **Create NAT gateway**.
 
 2. Under **NAT gateway settings**, set:
-   - Name: `project-dev-nat-us-east-1a`
-   - Availability mode: **Zonal**
-   - Subnet: `project-dev-subnet-public-us-east-1a`
-   - Connectivity type: **Public**
+    - Name: `project-dev-nat-us-east-1a`
+    - Availability mode: **Zonal**
+    - Subnet: `project-dev-subnet-public-us-east-1a`
+    - Connectivity type: **Public**
 
 3. Click **Allocate Elastic IP**.
 4. Click **Create NAT gateway**.
@@ -93,10 +93,10 @@ Create one NAT Gateway per AZ.
 1. Go to **VPC** > **NAT gateways** > **Create NAT gateway**.
 
 2. Under **NAT gateway settings**, set:
-   - Name: `project-dev-nat-us-east-1b`
-   - Availability mode: **Zonal**
-   - Subnet: `project-dev-subnet-public-us-east-1b`
-   - Connectivity type: **Public**
+    - Name: `project-dev-nat-us-east-1b`
+    - Availability mode: **Zonal**
+    - Subnet: `project-dev-subnet-public-us-east-1b`
+    - Connectivity type: **Public**
 
 3. Click **Allocate Elastic IP**.
 4. Click **Create NAT gateway**.
@@ -110,20 +110,20 @@ Create one NAT Gateway per AZ.
 1. Go to **VPC** > **Route tables** > **Create route table**.
 
 2. Under **Route table settings**, set:
-   - Name: `project-dev-rt-public`
-   - VPC: `project-dev-vpc`
+    - Name: `project-dev-rt-public`
+    - VPC: `project-dev-vpc`
 
 3. Click **Create route table**.
 
 4. Select it > **Routes** tab > **Edit routes** > **Add route** and set the following:
-   - Destination: `0.0.0.0/0`
-   - Target: Internet Gateway > `project-dev-igw`
+    - Destination: `0.0.0.0/0`
+    - Target: Internet Gateway > `project-dev-igw`
 
 5. Click **Save changes**.
 
 6. Select **Subnet associations** tab > **Edit subnet associations** and select:
-   - `project-dev-subnet-public-us-east-1a`
-   - `project-dev-subnet-public-us-east-1b`
+    - `project-dev-subnet-public-us-east-1a`
+    - `project-dev-subnet-public-us-east-1b`
 
 7. Click **Save associations**.
 
@@ -132,20 +132,20 @@ Create one NAT Gateway per AZ.
 1. Go to **VPC** > **Route tables** > **Create route table**.
 
 2. Under **Route table settings**, set:
-   - Name: `project-dev-rt-private-us-east-1a`
-   - VPC: `project-dev-vpc`
+    - Name: `project-dev-rt-private-us-east-1a`
+    - VPC: `project-dev-vpc`
 
 3. Click **Create route table**.
 
 4. Select it > **Routes** tab > **Edit routes** > **Add route** and set the following:
-   - Destination: `0.0.0.0/0`
-   - Target: NAT Gateway > `project-dev-nat-us-east-1a`
+    - Destination: `0.0.0.0/0`
+    - Target: NAT Gateway > `project-dev-nat-us-east-1a`
 
 5. Click **Save changes**.
 
 6. Select **Subnet associations** tab > **Edit subnet associations** and select:
-   - `project-dev-subnet-app-us-east-1a`
-   - `project-dev-subnet-db-us-east-1a`
+    - `project-dev-subnet-app-us-east-1a`
+    - `project-dev-subnet-db-us-east-1a`
 
 7. Click **Save associations**.
 
@@ -154,20 +154,20 @@ Create one NAT Gateway per AZ.
 1. Go to **VPC** > **Route tables** > **Create route table**.
 
 2. Under **Route table settings**, set:
-   - Name: `project-dev-rt-private-us-east-1b`
-   - VPC: `project-dev-vpc`
+    - Name: `project-dev-rt-private-us-east-1b`
+    - VPC: `project-dev-vpc`
 
 3. Click **Create route table**.
 
 4. Select it > **Routes** tab > **Edit routes** > **Add route** and set the following:
-   - Destination: `0.0.0.0/0`
-   - Target: NAT Gateway > `project-dev-nat-us-east-1b`
+    - Destination: `0.0.0.0/0`
+    - Target: NAT Gateway > `project-dev-nat-us-east-1b`
 
 5. Click **Save changes**.
 
 6. Select **Subnet associations** tab > **Edit subnet associations** and select:
-   - `project-dev-subnet-app-us-east-1b`
-   - `project-dev-subnet-db-us-east-1b`
+    - `project-dev-subnet-app-us-east-1b`
+    - `project-dev-subnet-db-us-east-1b`
 
 7. Click **Save associations**.
 
@@ -180,24 +180,24 @@ All security groups use VPC: `project-dev-vpc`.
 Go to **VPC** > **Security groups** > **Create security group** for each:
 
 1. For `project-dev-sg-bastion`, set under **Basic details**:
-   - Security group name: `project-dev-sg-bastion`
-   - Description: Bastion host security group
-   - VPC: `project-dev-vpc`
+    - Security group name: `project-dev-sg-bastion`
+    - Description: Bastion host security group
+    - VPC: `project-dev-vpc`
 
 2. For `project-dev-sg-db`, set under **Basic details**:
-   - Security group name: `project-dev-sg-db`
-   - Description: DB tier security group
-   - VPC: `project-dev-vpc`
+    - Security group name: `project-dev-sg-db`
+    - Description: DB tier security group
+    - VPC: `project-dev-vpc`
 
 3. For `project-dev-sg-app`, set under **Basic details**:
-   - Security group name: `project-dev-sg-app`
-   - Description: App tier security group
-   - VPC: `project-dev-vpc`
+    - Security group name: `project-dev-sg-app`
+    - Description: App tier security group
+    - VPC: `project-dev-vpc`
 
 4. For `project-dev-sg-alb`, set under **Basic details**:
-   - Security group name: `project-dev-sg-alb`
-   - Description: ALB security group
-   - VPC: `project-dev-vpc`
+    - Security group name: `project-dev-sg-alb`
+    - Description: ALB security group
+    - VPC: `project-dev-vpc`
 
 > For each one, remove the default outbound rule under **Outbound rules** before saving, except for `project-dev-sg-bastion` (leave its outbound as default).
 
@@ -206,73 +206,73 @@ Go to **VPC** > **Security groups** > **Create security group** for each:
 For `project-dev-sg-bastion`:
 
 1. Go to `project-dev-sg-bastion` > **Inbound rules** > **Edit inbound rules**. Add:
-   - Type: SSH
-   - Protocol: TCP
-   - Port range: 22
-   - Source: `0.0.0.0/0`
-   - Description: SSH from admin device
+    - Type: SSH
+    - Protocol: TCP
+    - Port range: 22
+    - Source: `0.0.0.0/0`
+    - Description: SSH from admin device
 2. Click **Save rules**.
 
 For `project-dev-sg-db`:
 
 1. Go to `project-dev-sg-db` > **Inbound rules** > **Edit inbound rules**. Add:
-   - Type: MYSQL/Aurora
-   - Protocol: TCP
-   - Port range: 3306
-   - Source: `project-dev-sg-app`
-   - Description: MySQL from app tier only
+    - Type: MYSQL/Aurora
+    - Protocol: TCP
+    - Port range: 3306
+    - Source: `project-dev-sg-app`
+    - Description: MySQL from app tier only
 2. Add a second rule:
-   - Type: MYSQL/Aurora
-   - Protocol: TCP
-   - Port range: 3306
-   - Source: `project-dev-sg-bastion`
-   - Description: MySQL from bastion
+    - Type: MYSQL/Aurora
+    - Protocol: TCP
+    - Port range: 3306
+    - Source: `project-dev-sg-bastion`
+    - Description: MySQL from bastion
 3. Click **Save rules**.
 
 For `project-dev-sg-app`:
 
 1. Go to `project-dev-sg-app` > **Inbound rules** > **Edit inbound rules**. Add:
-   - Type: HTTP
-   - Protocol: TCP
-   - Port range: 80
-   - Source: `project-dev-sg-alb`
-   - Description: HTTP from ALB only
+    - Type: HTTP
+    - Protocol: TCP
+    - Port range: 80
+    - Source: `project-dev-sg-alb`
+    - Description: HTTP from ALB only
 2. Add a second rule:
-   - Type: SSH
-   - Protocol: TCP
-   - Port range: 22
-   - Source: `project-dev-sg-bastion`
-   - Description: SSH from bastion only
+    - Type: SSH
+    - Protocol: TCP
+    - Port range: 22
+    - Source: `project-dev-sg-bastion`
+    - Description: SSH from bastion only
 3. Click **Save rules**.
 4. Go to `project-dev-sg-app` > **Outbound rules** > **Edit outbound rules**. Add:
-   - Type: MYSQL/Aurora
-   - Protocol: TCP
-   - Port range: 3306
-   - Destination: `project-dev-sg-db`
-   - Description: MySQL to DB tier
+    - Type: MYSQL/Aurora
+    - Protocol: TCP
+    - Port range: 3306
+    - Destination: `project-dev-sg-db`
+    - Description: MySQL to DB tier
 5. Add a second rule:
-   - Type: HTTPS
-   - Protocol: TCP
-   - Port range: 443
-   - Destination: `0.0.0.0/0`
-   - Description: AWS APIs, S3, dnf updates
+    - Type: HTTPS
+    - Protocol: TCP
+    - Port range: 443
+    - Destination: `0.0.0.0/0`
+    - Description: AWS APIs, S3, dnf updates
 6. Click **Save rules**.
 
 For `project-dev-sg-alb`:
 
 1. Go to `project-dev-sg-alb` > **Inbound rules** > **Edit inbound rules**. Add:
-   - Type: HTTP
-   - Protocol: TCP
-   - Port range: 80
-   - Source: `0.0.0.0/0`
-   - Description: HTTP from internet
+    - Type: HTTP
+    - Protocol: TCP
+    - Port range: 80
+    - Source: `0.0.0.0/0`
+    - Description: HTTP from internet
 2. Click **Save rules**.
 3. Go to `project-dev-sg-alb` > **Outbound rules** > **Edit outbound rules**. Add:
-   - Type: HTTP
-   - Protocol: TCP
-   - Port range: 80
-   - Destination: `project-dev-sg-app`
-   - Description: Forward to app tier
+    - Type: HTTP
+    - Protocol: TCP
+    - Port range: 80
+    - Destination: `project-dev-sg-app`
+    - Description: Forward to app tier
 4. Click **Save rules**.
 
 ## Step 7 - Create RDS MySQL Instance
@@ -282,15 +282,15 @@ For `project-dev-sg-alb`:
 1. Go to **RDS** > **Subnet groups** > **Create DB subnet group**.
 
 2. Under **Subnet group details**, set:
-   - Name: `project-dev-subnet-group-mysql`
-   - Description: DB subnet group for MySQL
-   - VPC: `project-dev-vpc`
+    - Name: `project-dev-subnet-group-mysql`
+    - Description: DB subnet group for MySQL
+    - VPC: `project-dev-vpc`
 
 3. Under **Add subnets**, set:
-   - Availability Zones: `us-east-1a` and `us-east-1b`
-   - Subnets:
-     - `project-dev-subnet-db-us-east-1a`
-     - `project-dev-subnet-db-us-east-1b`
+    - Availability Zones: `us-east-1a` and `us-east-1b`
+    - Subnets:
+        - `project-dev-subnet-db-us-east-1a`
+        - `project-dev-subnet-db-us-east-1b`
 
 4. Click **Create**.
 
@@ -299,32 +299,32 @@ For `project-dev-sg-alb`:
 1. Go to **RDS** > **Databases** > **Create database** > **Full configuration**.
 
 2. Under **Engine options**, set:
-   - Engine type: **MySQL**
+    - Engine type: **MySQL**
 
 3. Under **Choose a database creation method**, select:
-   - **Full configuration**
+    - **Full configuration**
 
 4. Under **Templates**, select:
-   - **Dev/Test**
+    - **Dev/Test**
 
 5. Under **Availability and durability**, set:
-   - Deployment options: **Single-AZ DB instance deployment**
+    - Deployment options: **Single-AZ DB instance deployment**
 
 6. Under **Settings**, set:
-   - Engine version: **MySQL 8.4.8**
-   - DB instance identifier: `project-dev-mysql-db01`
+    - Engine version: **MySQL 8.4.8**
+    - DB instance identifier: `project-dev-mysql-db01`
 
 7. Under **Credentials Settings**, set:
-   - Master username: `admin`
-   - Credentials management: **Managed in AWS Secrets Manager**
+    - Master username: `admin`
+    - Credentials management: **Managed in AWS Secrets Manager**
 
 8. Under **Instance configuration**, set:
-   - DB instance class: **Burstable classes**
-   - Instance type: `db.t3.micro`
+    - DB instance class: **Burstable classes**
+    - Instance type: `db.t3.micro`
 
 9. Under **Storage**, set:
-   - Storage type: **gp2**
-   - Allocated storage: `20` GB
+    - Storage type: **gp2**
+    - Allocated storage: `20` GB
 
 10. Under **Additional storage configuration**, set:
     - Storage autoscaling: **Disabled**
@@ -353,9 +353,9 @@ For `project-dev-sg-alb`:
 1. Go to **S3** > **Create bucket**.
 
 2. Under **General configuration**, set:
-   - Bucket type: **General purpose**
-   - Bucket namespace: **Account Regional namespace**
-   - Bucket name prefix: `project-dev-artifacts`
+    - Bucket type: **General purpose**
+    - Bucket namespace: **Account Regional namespace**
+    - Bucket name prefix: `project-dev-artifacts`
 
 3. Leave all other settings as default and click **Create bucket**.
 
@@ -363,36 +363,36 @@ For `project-dev-sg-alb`:
 
 4. Copy the user data template and replace the bucket name placeholder:
 
-   ```sh
-   cp terraform/modules/compute/templates/user-data.sh.tpl scripts/user-data.sh
-   ```
+    ```sh
+    cp terraform/modules/compute/templates/user-data.sh.tpl scripts/user-data.sh
+    ```
 
-   Open `scripts/user-data.sh` and replace `${s3_bucket_name}` with the actual full bucket name.
+    Open `scripts/user-data.sh` and replace `${s3_bucket_name}` with the actual full bucket name.
 
 5. Set the bucket name variable, then upload the app and scripts from your local machine:
 
-   ```sh
-   BUCKET_NAME=$(
-      aws s3api list-buckets \
-         --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
-         --output text
-   )
+    ```sh
+    BUCKET_NAME=$(
+       aws s3api list-buckets \
+          --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
+          --output text
+    )
 
-   aws s3 sync app/ s3://$BUCKET_NAME/app/
-   aws s3 cp db/countries.sql s3://$BUCKET_NAME/countries.sql
-   aws s3 cp scripts/db-import.sh s3://$BUCKET_NAME/db-import.sh
-   ```
+    aws s3 sync app/ s3://$BUCKET_NAME/app/
+    aws s3 cp db/countries.sql s3://$BUCKET_NAME/countries.sql
+    aws s3 cp scripts/db-import.sh s3://$BUCKET_NAME/db-import.sh
+    ```
 
 ## Step 9 - Create Key Pair
 
 1. Go to **EC2** > **Key Pairs** > **Create key pair**.
 
 2. Under **Key pair**, set:
-   - Name: `project-dev-keypair`
-   - Key pair type: **RSA**
-   - Private key file format:
-     - `.pem`: for use with OpenSSH (Linux/Mac)
-     - `.ppk`: for use with PuTTY (Windows)
+    - Name: `project-dev-keypair`
+    - Key pair type: **RSA**
+    - Private key file format:
+        - `.pem`: for use with OpenSSH (Linux/Mac)
+        - `.ppk`: for use with PuTTY (Windows)
 
 3. Click **Create key pair**. The file downloads automatically. Keep it safe.
 
@@ -401,27 +401,27 @@ For `project-dev-sg-alb`:
 1. Go to **EC2** > **Instances** > **Launch instances**.
 
 2. Under **Name and tags**, set:
-   - Name: `project-dev-bastion`
+    - Name: `project-dev-bastion`
 
 3. Under **Application and OS Images**, set:
-   - Quick Start: **Amazon Linux**
-   - Amazon Machine Image (AMI): **Amazon Linux 2023 kernel-6.1 AMI**
+    - Quick Start: **Amazon Linux**
+    - Amazon Machine Image (AMI): **Amazon Linux 2023 kernel-6.1 AMI**
 
 4. Under **Instance type**, set:
-   - Instance type: `t3.micro`
+    - Instance type: `t3.micro`
 
 5. Under **Key pair (login)**, set:
-   - Key pair name: `project-dev-keypair`
+    - Key pair name: `project-dev-keypair`
 
 6. Under **Network settings**, click **Edit** and set:
-   - VPC: `project-dev-vpc`
-   - Subnet: `project-dev-subnet-public-us-east-1a`
-   - Auto-assign public IP: **Enable**
-   - Firewall (security groups): **Select existing security group**
-   - Common security groups: `project-dev-sg-bastion`
+    - VPC: `project-dev-vpc`
+    - Subnet: `project-dev-subnet-public-us-east-1a`
+    - Auto-assign public IP: **Enable**
+    - Firewall (security groups): **Select existing security group**
+    - Common security groups: `project-dev-sg-bastion`
 
 7. Under **Advanced details**, set:
-   - IAM instance profile: `LabInstanceProfile`
+    - IAM instance profile: `LabInstanceProfile`
 
 8. Click **Launch instance**.
 
@@ -430,39 +430,39 @@ For `project-dev-sg-alb`:
 > Before running the import, confirm the RDS instance status shows **Available** in **RDS** > **Databases**.
 
 1. Set the correct permissions on the key file:
-   ```sh
-   chmod 400 project-dev-keypair.pem
-   ```
+    ```sh
+    chmod 400 project-dev-keypair.pem
+    ```
 2. Look up the bastion's public IP:
-   ```sh
-   BASTION_IP=$(
-      aws ec2 describe-instances \
-         --filters \
-            "Name=tag:Name,Values=project-dev-bastion" \
-            "Name=instance-state-name,Values=running" \
-         --query "Reservations[0].Instances[0].PublicIpAddress" \
-         --output text
-   )
-   ```
+    ```sh
+    BASTION_IP=$(
+       aws ec2 describe-instances \
+          --filters \
+             "Name=tag:Name,Values=project-dev-bastion" \
+             "Name=instance-state-name,Values=running" \
+          --query "Reservations[0].Instances[0].PublicIpAddress" \
+          --output text
+    )
+    ```
 3. SSH into the bastion with agent forwarding:
 
-   ```sh
-   ssh -A -i project-dev-keypair.pem ec2-user@$BASTION_IP
-   ```
+    ```sh
+    ssh -A -i project-dev-keypair.pem ec2-user@$BASTION_IP
+    ```
 
-   The `-A` flag forwards the local SSH agent to the bastion, so app instances in private subnets can be reached from there using the local key without copying the key file to the bastion.
+    The `-A` flag forwards the local SSH agent to the bastion, so app instances in private subnets can be reached from there using the local key without copying the key file to the bastion.
 
 4. Set the bucket name variable, pull the import script from S3, and run it:
-   ```sh
-   BUCKET_NAME=$(
-      aws s3api list-buckets \
-         --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
-         --output text
-   )
-   aws s3 cp s3://$BUCKET_NAME/db-import.sh .
-   chmod +x db-import.sh
-   ./db-import.sh
-   ```
+    ```sh
+    BUCKET_NAME=$(
+       aws s3api list-buckets \
+          --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
+          --output text
+    )
+    aws s3 cp s3://$BUCKET_NAME/db-import.sh .
+    chmod +x db-import.sh
+    ./db-import.sh
+    ```
 
 The script installs the MySQL client, downloads the dump from S3, retrieves credentials from Secrets Manager, imports the data, and verifies the row count.
 
@@ -471,28 +471,28 @@ The script installs the MySQL client, downloads the dump from S3, retrieves cred
 1. Go to **EC2** > **Launch Templates** > **Create launch template**.
 
 2. Under **Launch template name and description**, set:
-   - Launch template name: `project-dev-lt-app`
-   - Template version description: `Launch template for app tier`
-   - Auto Scaling guidance: **Enable** (check "Provide guidance to help me set up a template that I can use with EC2 Auto Scaling")
+    - Launch template name: `project-dev-lt-app`
+    - Template version description: `Launch template for app tier`
+    - Auto Scaling guidance: **Enable** (check "Provide guidance to help me set up a template that I can use with EC2 Auto Scaling")
 
 3. Under **Application and OS Images**, set:
-   - Quick Start: **Amazon Linux**
-   - Amazon Machine Image (AMI): **Amazon Linux 2023 kernel-6.1 AMI**
+    - Quick Start: **Amazon Linux**
+    - Amazon Machine Image (AMI): **Amazon Linux 2023 kernel-6.1 AMI**
 
 4. Under **Instance type**, set:
-   - Instance type: `t3.micro`
+    - Instance type: `t3.micro`
 
 5. Under **Key pair (login)**, set:
-   - Key pair name: `project-dev-keypair`
+    - Key pair name: `project-dev-keypair`
 
 6. Under **Network settings**, set:
-   - Subnet: **Don't include in launch template**
-   - Firewall (security groups): **Select existing security group**
-   - Security groups: `project-dev-sg-app`
+    - Subnet: **Don't include in launch template**
+    - Firewall (security groups): **Select existing security group**
+    - Security groups: `project-dev-sg-app`
 
 7. Under **Advanced details**, set:
-   - IAM instance profile: `LabInstanceProfile`
-   - User data: paste the contents of `scripts/user-data.sh`
+    - IAM instance profile: `LabInstanceProfile`
+    - User data: paste the contents of `scripts/user-data.sh`
 
 8. Click **Create launch template**.
 
@@ -501,24 +501,24 @@ The script installs the MySQL client, downloads the dump from S3, retrieves cred
 1. Go to **EC2** > **Target Groups** > **Create target group**.
 
 2. Under **Settings**, set:
-   - Target type: **Instances**
-   - Target group name: `project-dev-tg-app`
-   - Protocol: **HTTP**
-   - Port: `80`
-   - IP address type: **IPv4**
-   - VPC: `project-dev-vpc`
-   - Protocol version: **HTTP1**
+    - Target type: **Instances**
+    - Target group name: `project-dev-tg-app`
+    - Protocol: **HTTP**
+    - Port: `80`
+    - IP address type: **IPv4**
+    - VPC: `project-dev-vpc`
+    - Protocol version: **HTTP1**
 
 3. Under **Health checks**, set:
-   - Health check protocol: **HTTP**
-   - Health check path: `/index.php`
+    - Health check protocol: **HTTP**
+    - Health check path: `/index.php`
 
 4. Under **Advanced health check settings**, set:
-   - Healthy threshold: `2`
-   - Unhealthy threshold: `3`
-   - Timeout: `5`
-   - Interval: `30`
-   - Success codes: `200`
+    - Healthy threshold: `2`
+    - Unhealthy threshold: `3`
+    - Timeout: `5`
+    - Interval: `30`
+    - Success codes: `200`
 
 5. Click **Next**. Do not register targets manually.
 6. Click **Create target group**.
@@ -528,24 +528,24 @@ The script installs the MySQL client, downloads the dump from S3, retrieves cred
 1. Go to **EC2** > **Load Balancers** > **Create Load Balancer** > select **Application Load Balancer**.
 
 2. Under **Basic configuration**, set:
-   - Load balancer name: `project-dev-elb-web`
-   - Scheme: **Internet-facing**
-   - Load balancer IP address type: **IPv4**
+    - Load balancer name: `project-dev-elb-web`
+    - Scheme: **Internet-facing**
+    - Load balancer IP address type: **IPv4**
 
 3. Under **Network mapping**, set:
-   - VPC: `project-dev-vpc`
-   - Availability Zones and subnets:
-     - `us-east-1a` → `project-dev-subnet-public-us-east-1a`
-     - `us-east-1b` → `project-dev-subnet-public-us-east-1b`
+    - VPC: `project-dev-vpc`
+    - Availability Zones and subnets:
+        - `us-east-1a` → `project-dev-subnet-public-us-east-1a`
+        - `us-east-1b` → `project-dev-subnet-public-us-east-1b`
 
 4. Under **Security groups**, set:
-   - Remove the default security group
-   - Select: `project-dev-sg-alb`
+    - Remove the default security group
+    - Select: `project-dev-sg-alb`
 
 5. Under **Listeners and routing**, set:
-   - Protocol: **HTTP** | Port: `80`
-   - Default action > Routing action: **Forward to target groups**
-   - Default action > Forward to target group > Target group: `project-dev-tg-app`
+    - Protocol: **HTTP** | Port: `80`
+    - Default action > Routing action: **Forward to target groups**
+    - Default action > Forward to target group > Target group: `project-dev-tg-app`
 
 6. Click **Create load balancer**.
 
@@ -556,44 +556,44 @@ Go to **EC2** > **Auto Scaling Groups** > **Create Auto Scaling group**.
 ### Step 1 - Choose launch template or configuration
 
 1. Under **Name**, set:
-   - Auto Scaling group name: `project-dev-asg-app`
+    - Auto Scaling group name: `project-dev-asg-app`
 2. Under **Launch template**, set:
-   - Launch template: `project-dev-lt-app`
+    - Launch template: `project-dev-lt-app`
 3. Click **Next**.
 
 ### Step 2 - Choose instance launch options
 
 1. Under **Network**, set:
-   - VPC: `project-dev-vpc`
-   - Availability Zones and subnets: `project-dev-subnet-app-us-east-1a` and `project-dev-subnet-app-us-east-1b`
-   - Availability Zone distribution: **Balanced best effort**
+    - VPC: `project-dev-vpc`
+    - Availability Zones and subnets: `project-dev-subnet-app-us-east-1a` and `project-dev-subnet-app-us-east-1b`
+    - Availability Zone distribution: **Balanced best effort**
 2. Click **Next**.
 
 ### Step 3 - Integrate with other services
 
 1. Under **Load balancing**, set:
-   - Select Load balancing options: **Attach to an existing load balancer**
-   - Attach to an existing load balancer
-     - Select the load balancers to attach: **Choose from your load balancer target groups**
-     - Existing load balancer target groups: `project-dev-tg-app | HTTP`
+    - Select Load balancing options: **Attach to an existing load balancer**
+    - Attach to an existing load balancer
+        - Select the load balancers to attach: **Choose from your load balancer target groups**
+        - Existing load balancer target groups: `project-dev-tg-app | HTTP`
 2. Under **Health checks**, enable:
-   - **Turn on Elastic Load Balancing health checks**
-   - Health check grace period: `300` seconds
+    - **Turn on Elastic Load Balancing health checks**
+    - Health check grace period: `300` seconds
 3. Click **Next**.
 
 ### Step 4 - Configure group size and scaling
 
 1. Under **Group size**, set:
-   - Desired capacity: `2`
+    - Desired capacity: `2`
 2. Under **Scaling**, set:
-   - Scaling limits
-     - Min desired capacity: `2`
-     - Max desired capacity: `4`
-   - Automatic scaling
-     - Choose whether to use a target tracking policy: **Target tracking scaling policy**
-     - Scaling policy name: `project-dev-scaling-policy`
-     - Metric type: **Average CPU utilization**
-     - Target value: `60`
+    - Scaling limits
+        - Min desired capacity: `2`
+        - Max desired capacity: `4`
+    - Automatic scaling
+        - Choose whether to use a target tracking policy: **Target tracking scaling policy**
+        - Scaling policy name: `project-dev-scaling-policy`
+        - Metric type: **Average CPU utilization**
+        - Target value: `60`
 3. Click **Next**.
 
 ### Steps 5, 6, 7 - Notifications, Tags, Review
@@ -605,12 +605,12 @@ Skip steps 5 and 6 (leave defaults). On step 7, review the configuration and cli
 ## Step 16 - Test the Application
 
 1. Look up the ALB DNS name:
-   ```sh
-   aws elbv2 describe-load-balancers \
-      --names project-dev-elb-web \
-      --query "LoadBalancers[0].DNSName" \
-      --output text
-   ```
+    ```sh
+    aws elbv2 describe-load-balancers \
+       --names project-dev-elb-web \
+       --query "LoadBalancers[0].DNSName" \
+       --output text
+    ```
 2. Open the DNS name in a browser.
 3. You should see the Example Social Research Organization homepage.
 4. Click **Query** and run a query to verify the database connection works.

@@ -79,57 +79,57 @@ This deployment uses Terraform to provision the full infrastructure. For a manua
 
 1. Create a key pair. This is used to SSH into the bastion host and app instances:
 
-   ```sh
-   aws ec2 create-key-pair \
+    ```sh
+    aws ec2 create-key-pair \
       --key-name project-dev-keypair \
       --query KeyMaterial \
       --output text > project-dev-keypair.pem
-   ```
+    ```
 
 2. Set the correct permissions on the key file. SSH will refuse to use it otherwise:
 
-   ```sh
-   chmod 400 project-dev-keypair.pem
-   ```
+    ```sh
+    chmod 400 project-dev-keypair.pem
+    ```
 
 3. Create the S3 bucket. It will store the app source, the SQL dump, and the DB import script (all pulled by EC2 instances at boot time):
 
-   ```sh
-   ACCOUNT_ID=$(
+    ```sh
+    ACCOUNT_ID=$(
       aws sts get-caller-identity \
-         --query Account \
-         --output text
-   )
+        --query Account \
+        --output text
+    )
 
-   BUCKET_NAME="project-dev-artifacts-${ACCOUNT_ID}-us-east-1-an"
+    BUCKET_NAME="project-dev-artifacts-${ACCOUNT_ID}-us-east-1-an"
 
-   aws s3api create-bucket \
+    aws s3api create-bucket \
       --bucket "$BUCKET_NAME" \
       --region us-east-1 \
       --bucket-namespace account-regional
 
-   echo "Bucket name: $BUCKET_NAME"
-   ```
+    echo "Bucket name: $BUCKET_NAME"
+    ```
 
-   To retrieve the bucket name in a new terminal session:
+    To retrieve the bucket name in a new terminal session:
 
-   ```sh
-   BUCKET_NAME=$(
+    ```sh
+    BUCKET_NAME=$(
       aws s3api list-buckets \
-         --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
-         --output text
-   )
+        --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
+        --output text
+    )
 
-   echo "Bucket name: $BUCKET_NAME"
-   ```
+    echo "Bucket name: $BUCKET_NAME"
+    ```
 
 4. Upload artifacts to S3:
 
-   ```sh
-   aws s3 sync app/ s3://$BUCKET_NAME/app/
-   aws s3 cp db/countries.sql s3://$BUCKET_NAME/countries.sql
-   aws s3 cp scripts/db-import.sh s3://$BUCKET_NAME/db-import.sh
-   ```
+    ```sh
+    aws s3 sync app/ s3://$BUCKET_NAME/app/
+    aws s3 cp db/countries.sql s3://$BUCKET_NAME/countries.sql
+    aws s3 cp scripts/db-import.sh s3://$BUCKET_NAME/db-import.sh
+    ```
 
 ### Deploy
 
@@ -137,25 +137,25 @@ To deploy the infrastructure:
 
 1. Initialize Terraform:
 
-   ```sh
-   terraform -chdir=terraform/environments/dev init
-   ```
+    ```sh
+    terraform -chdir=terraform/environments/dev init
+    ```
 
 2. Preview the changes:
 
-   ```sh
-   terraform -chdir=terraform/environments/dev plan \
+    ```sh
+    terraform -chdir=terraform/environments/dev plan \
       -var-file=dev.tfvars \
       -var="s3_bucket_name=$BUCKET_NAME"
-   ```
+    ```
 
 3. Deploy:
 
-   ```sh
-   terraform -chdir=terraform/environments/dev apply \
+    ```sh
+    terraform -chdir=terraform/environments/dev apply \
       -var-file=dev.tfvars \
       -var="s3_bucket_name=$BUCKET_NAME"
-   ```
+    ```
 
 To view the outputs at any time:
 
@@ -169,47 +169,47 @@ Once `terraform apply` completes, to import the database:
 
 1. Look up the bastion's public IP:
 
-   ```sh
-   BASTION_IP=$(
+    ```sh
+    BASTION_IP=$(
       aws ec2 describe-instances \
-         --filters \
-            "Name=tag:Name,Values=project-dev-bastion" \
-            "Name=instance-state-name,Values=running" \
-         --query "Reservations[0].Instances[0].PublicIpAddress" \
-         --output text
-   )
-   ```
+        --filters \
+          "Name=tag:Name,Values=project-dev-bastion" \
+          "Name=instance-state-name,Values=running" \
+        --query "Reservations[0].Instances[0].PublicIpAddress" \
+        --output text
+    )
+    ```
 
 2. SSH into the bastion with agent forwarding:
 
-   ```sh
-   ssh -A -i project-dev-keypair.pem ec2-user@$BASTION_IP
-   ```
+    ```sh
+    ssh -A -i project-dev-keypair.pem ec2-user@$BASTION_IP
+    ```
 
-   The `-A` flag forwards the local SSH agent to the bastion, so app instances in private subnets can be reached from there using the local key without copying the key file to the bastion.
+    The `-A` flag forwards the local SSH agent to the bastion, so app instances in private subnets can be reached from there using the local key without copying the key file to the bastion.
 
 3. Set the bucket name variable:
 
-   ```sh
-   BUCKET_NAME=$(
+    ```sh
+    BUCKET_NAME=$(
       aws s3api list-buckets \
-         --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
-         --output text
-   )
-   ```
+        --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
+        --output text
+    )
+    ```
 
 4. Pull the import script from S3:
 
-   ```sh
-   aws s3 cp s3://$BUCKET_NAME/db-import.sh .
-   ```
+    ```sh
+    aws s3 cp s3://$BUCKET_NAME/db-import.sh .
+    ```
 
 5. Run it:
 
-   ```sh
-   chmod +x db-import.sh
-   ./db-import.sh
-   ```
+    ```sh
+    chmod +x db-import.sh
+    ./db-import.sh
+    ```
 
 ### Access the App
 
@@ -221,8 +221,8 @@ To tear down all infrastructure:
 
 ```sh
 terraform -chdir=terraform/environments/dev destroy \
-   -var-file=dev.tfvars \
-   -var="s3_bucket_name=$BUCKET_NAME"
+  -var-file=dev.tfvars \
+  -var="s3_bucket_name=$BUCKET_NAME"
 ```
 
 The S3 bucket is not managed by Terraform. Empty and delete it separately:
