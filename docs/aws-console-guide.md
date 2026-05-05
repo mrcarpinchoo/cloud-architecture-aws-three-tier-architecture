@@ -359,7 +359,7 @@ For `project-dev-sg-alb`:
 
 3. Leave all other settings as default and click **Create bucket**.
 
-> **Note**: After creation, AWS will show the full bucket name in the format `project-dev-artifacts-<account-regional-suffix>`. Copy it — you'll need it in the next steps.
+> **Note**: After creation, AWS will show the full bucket name in the format `project-dev-artifacts-<account-regional-suffix>`. Copy it as it wil be needed in the next steps.
 
 4. Copy the user data template and replace the bucket name placeholder:
 
@@ -367,7 +367,7 @@ For `project-dev-sg-alb`:
    cp terraform/modules/compute/templates/user-data.sh.tpl scripts/user-data.sh
    ```
 
-   Open `scripts/user-data.sh` and replace `${s3_bucket_name}` with your actual full bucket name.
+   Open `scripts/user-data.sh` and replace `${s3_bucket_name}` with the actual full bucket name.
 
 5. Set the bucket name variable, then upload the app and scripts from your local machine:
 
@@ -391,10 +391,10 @@ For `project-dev-sg-alb`:
    - Name: `project-dev-keypair`
    - Key pair type: **RSA**
    - Private key file format:
-     - `.pem` — for use with OpenSSH (Linux/Mac)
-     - `.ppk` — for use with PuTTY (Windows)
+     - `.pem`: for use with OpenSSH (Linux/Mac)
+     - `.ppk`: for use with PuTTY (Windows)
 
-3. Click **Create key pair**. The file downloads automatically — keep it safe.
+3. Click **Create key pair**. The file downloads automatically. Keep it safe.
 
 ## Step 10 - Launch Bastion Host
 
@@ -520,7 +520,7 @@ The script installs the MySQL client, downloads the dump from S3, retrieves cred
    - Interval: `30`
    - Success codes: `200`
 
-5. Click **Next** — do not register targets manually.
+5. Click **Next**. Do not register targets manually.
 6. Click **Create target group**.
 
 ## Step 14 - Create Application Load Balancer
