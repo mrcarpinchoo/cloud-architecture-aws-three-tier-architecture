@@ -214,3 +214,20 @@ Once `terraform apply` completes, to import the database:
 ### Access the App
 
 Open the ALB DNS name shown in Terraform outputs in your browser.
+
+### Cleanup
+
+To tear down all infrastructure:
+
+```sh
+terraform -chdir=terraform/environments/dev destroy \
+   -var-file=dev.tfvars \
+   -var="s3_bucket_name=$BUCKET_NAME"
+```
+
+The S3 bucket is not managed by Terraform. Empty and delete it separately:
+
+```sh
+aws s3 rm s3://$BUCKET_NAME --recursive
+aws s3api delete-bucket --bucket $BUCKET_NAME --region us-east-1
+```
