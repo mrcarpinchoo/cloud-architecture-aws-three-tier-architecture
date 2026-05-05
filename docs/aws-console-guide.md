@@ -6,7 +6,7 @@ Step-by-step guide to build the three-tier architecture through the AWS Console.
 
 - AWS Academy Learner Lab session active
 - Region set to `us-east-1` (N. Virginia)
-- `LabRole` IAM role available
+- `LabInstanceProfile` IAM instance profile available
 
 ## Step 1 - Create the VPC
 
@@ -363,17 +363,24 @@ For `project-dev-sg-alb`:
 
 4. Copy the user data template and replace the bucket name placeholder:
 
-   ```bash
+   ```sh
    cp terraform/modules/compute/templates/user-data.sh.tpl scripts/user-data.sh
    ```
 
    Open `scripts/user-data.sh` and replace `${s3_bucket_name}` with your actual full bucket name.
 
-5. Upload the app and scripts from your local machine:
-   ```bash
-   aws s3 sync app/ s3://project-dev-artifacts-<account-regional-suffix>/app/
-   aws s3 cp db/countries.sql s3://project-dev-artifacts-<account-regional-suffix>/countries.sql
-   aws s3 cp scripts/db-import.sh s3://project-dev-artifacts-<account-regional-suffix>/db-import.sh
+5. Set the bucket name variable, then upload the app and scripts from your local machine:
+
+   ```sh
+   BUCKET_NAME=$(
+      aws s3api list-buckets \
+         --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
+         --output text
+   )
+
+   aws s3 sync app/ s3://$BUCKET_NAME/app/
+   aws s3 cp db/countries.sql s3://$BUCKET_NAME/countries.sql
+   aws s3 cp scripts/db-import.sh s3://$BUCKET_NAME/db-import.sh
    ```
 
 ## Step 9 - Create Key Pair
@@ -414,7 +421,7 @@ For `project-dev-sg-alb`:
    - Common security groups: `project-dev-sg-bastion`
 
 7. Under **Advanced details**, set:
-   - IAM instance profile: `LabRole`
+   - IAM instance profile: `LabInstanceProfile`
 
 8. Click **Launch instance**.
 
@@ -423,24 +430,36 @@ For `project-dev-sg-alb`:
 > Before running the import, confirm the RDS instance status shows **Available** in **RDS** > **Databases**.
 
 1. Set the correct permissions on the key file:
-   ```bash
+   ```sh
    chmod 400 project-dev-keypair.pem
    ```
-2. Copy the key to the bastion:
-   ```bash
-   scp -i project-dev-keypair.pem project-dev-keypair.pem ec2-user@<bastion-public-ip>:~
+2. Look up the bastion's public IP:
+   ```sh
+   BASTION_IP=$(
+      aws ec2 describe-instances \
+         --filters \
+            "Name=tag:Name,Values=project-dev-bastion" \
+            "Name=instance-state-name,Values=running" \
+         --query "Reservations[0].Instances[0].PublicIpAddress" \
+         --output text
+   )
    ```
-3. SSH into the bastion:
-   ```bash
-   ssh -i project-dev-keypair.pem ec2-user@<bastion-public-ip>
+3. SSH into the bastion with agent forwarding:
+
+   ```sh
+   ssh -A -i project-dev-keypair.pem ec2-user@$BASTION_IP
    ```
-4. Set the correct permissions on the key file on the bastion:
-   ```bash
-   chmod 400 project-dev-keypair.pem
-   ```
-5. Pull the import script from S3 and run it:
-   ```bash
-   aws s3 cp s3://project-dev-artifacts-<account-regional-suffix>/db-import.sh .
+
+   The `-A` flag forwards the local SSH agent to the bastion, so app instances in private subnets can be reached from there using the local key without copying the key file to the bastion.
+
+4. Set the bucket name variable, pull the import script from S3, and run it:
+   ```sh
+   BUCKET_NAME=$(
+      aws s3api list-buckets \
+         --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
+         --output text
+   )
+   aws s3 cp s3://$BUCKET_NAME/db-import.sh .
    chmod +x db-import.sh
    ./db-import.sh
    ```
@@ -472,7 +491,7 @@ The script installs the MySQL client, downloads the dump from S3, retrieves cred
    - Security groups: `project-dev-sg-app`
 
 7. Under **Advanced details**, set:
-   - IAM instance profile: `LabRole`
+   - IAM instance profile: `LabInstanceProfile`
    - User data: paste the contents of `scripts/user-data.sh`
 
 8. Click **Create launch template**.
@@ -585,8 +604,14 @@ Skip steps 5 and 6 (leave defaults). On step 7, review the configuration and cli
 
 ## Step 16 - Test the Application
 
-1. Go to **EC2** > **Load Balancers** > select `project-dev-elb-web`.
-2. Copy the **DNS name** and open it in a browser.
+1. Look up the ALB DNS name:
+   ```sh
+   aws elbv2 describe-load-balancers \
+      --names project-dev-elb-web \
+      --query "LoadBalancers[0].DNSName" \
+      --output text
+   ```
+2. Open the DNS name in a browser.
 3. You should see the Example Social Research Organization homepage.
 4. Click **Query** and run a query to verify the database connection works.
 
