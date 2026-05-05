@@ -1,6 +1,3 @@
-# Docs
-docs/architecture-diagrams/**/*.png
-
 # Environment variables
 .env
 .env.*
@@ -20,7 +17,6 @@ scripts/user-data.sh
 
 # Terraform working directory
 .terraform/
-.terraform.lock.hcl
 
 # Terraform sensitive variable files
 *.tfvars.json
