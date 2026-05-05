@@ -1,11 +1,15 @@
 #!/bin/bash
 # Database Import Script
 # Run this from the bastion host to populate the RDS countries database.
-# Requires: LabRole attached to the bastion, RDS instance running, S3 bucket accessible.
+# Requires: LabInstanceProfile attached to the bastion, RDS instance running, S3 bucket accessible.
 
 set -euxo pipefail
 
-S3_BUCKET="project-dev-artifacts-<account-regional-suffix>"
+S3_BUCKET=$(
+  aws s3api list-buckets \
+    --query "Buckets[?starts_with(Name, 'project-dev-artifacts')].Name" \
+    --output text
+)
 DUMP_FILE="countries.sql"
 
 # installs MySQL client
